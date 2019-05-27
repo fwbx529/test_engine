@@ -94,11 +94,11 @@ void Renderer::CalNorm_SetBuffer(const vector<glm::vec3>& vertex, const bool fac
             normal[3 * f] = normal[3 * f + 1] = normal[3 * f + 2] = n;
         }
     }
-    for (unsigned int v = 0; v < vertex_count; v++)
+    for (unsigned int n = 0; n < normal.size(); n++)
     {
-        normal[v] = glm::normalize(normal[v]);
+        normal[n] = glm::normalize(normal[n]);
     }
-    SetBuffer(vertex, normal);
+    SetBuffer(vertex, normal, face_normal);
 }
 
 void Renderer::SetData(vector<glm::vec3>& _vertex, vector<glm::ivec3>& _face, const bool face_normal)

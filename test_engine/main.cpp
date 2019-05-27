@@ -30,7 +30,7 @@ int main()
 
     glm::vec3 Ambient(0.5, 0.5, 0.5);
     glm::vec3 LightColor(1, 1, 1);
-    glm::vec3 LightDirection(8, 2, 3);
+    glm::vec3 LightDirection(3, 5, 8);
     LightDirection = glm::normalize(LightDirection);
     float Shininess = 20.0f;
     float Strength = 1.0f;
