@@ -7,12 +7,13 @@ layout(location = 1) in vec3 normal;
 uniform mat4 model_matrix;
 uniform mat4 view_matrix;
 uniform mat4 projection_matrix;
+uniform vec3 color;
 out vec4 Color;
 out vec3 Normal;
 out vec4 Position;
 void main()
 {
-    Color = glm::vec4(0, 1, 1, 1);
+    Color = vec4(color, 1.0f);
     Normal = (model_matrix * vec4(normal, 0.0f)).xyz;
     Normal = normalize(Normal);
     Position = model_matrix * vec4(position, 1);

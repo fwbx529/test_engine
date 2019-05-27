@@ -2,16 +2,20 @@
 
 #include "Renderer.h"
 
-class Sphere:public Renderer
+struct Sphere
+{
+    glm::vec3 pos;
+    glm::vec3 radius;
+    glm::vec3 color;
+    Sphere() {}
+    Sphere(glm::vec3 _pos, glm::vec3 _radius, glm::vec3 _color) :pos(_pos), radius(_radius), color(_color) {}
+};
+
+class Sphere_renderer:public Renderer
 {
 public:
-    Sphere(const float radius, const int segments = 64);
-    void SetTransform(const glm::mat4& m, const glm::mat4& v, const glm::mat4& p) { SetMVP(prog, m, v, p); }
-    void SetPhong(const glm::vec3 Ambient, const glm::vec3 LightColor, const glm::vec3 LightDirection,
-                  const glm::vec3 HalfVector, const float Shininess, const float Strength);
-    void Draw(const bool draw_point = false) { Renderer::Draw(prog, draw_point); }
+    Sphere_renderer(const int segments = 64);
 private:
-    void SetSphereVertex(vector<glm::vec3>& vertex, const float radius, const int segments);
-    void SetSphereFace(vector<glm::ivec3>& face, const float radius, const int segments);
-    GLuint prog;
+    void SetSphereVertex(vector<glm::vec3>& vertex, const int segments);
+    void SetSphereFace(vector<glm::ivec3>& face, const int segments);
 };

@@ -11,6 +11,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+#include "LoadShaders.h"
+
 using namespace std;
 
 class Renderer 
@@ -19,11 +21,15 @@ public:
     Renderer();
     ~Renderer();
 
-    void InitProgram(GLuint& prog, const string vs_shader, const string fs_shader);
     void SetData(vector<glm::vec3>& _vertex, vector<glm::ivec3>& _face);
     void SetData(vector<glm::vec3>& _vertex, vector<glm::ivec3>& _face, vector<glm::vec3>& _normal);
-    void SetMVP(GLuint& prog, const glm::mat4& model, const glm::mat4& view, const glm::mat4& projection);
+    void BindVAO() { glBindVertexArray(vao); }
     void Draw(GLuint& prog, const bool draw_point = false);
+    void Draw(const bool draw_point = false);
+
+    static void InitProgram(GLuint& prog, const string vs_shader, const string fs_shader);
+    static void SetMVP(GLuint& prog, const glm::mat4& model, const glm::mat4& view, const glm::mat4& projection);
+
 private:
     void SetBuffer(const vector<glm::vec3>& vertex, const vector<glm::vec3>& normal);
     void CalNorm_SetBuffer(const vector<glm::vec3>& vertex);

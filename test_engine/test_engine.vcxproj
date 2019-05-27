@@ -155,12 +155,14 @@
     <ClInclude Include="LoadShaders.h" />
     <ClInclude Include="Objects.h" />
     <ClInclude Include="Renderer.h" />
+    <ClInclude Include="Scene.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="LoadShaders.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Objects.cpp" />
     <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="Scene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="fs_phong.glsl" />

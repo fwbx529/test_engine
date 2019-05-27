@@ -1,6 +1,5 @@
 
 #include "Renderer.h"
-#include "LoadShaders.h"
 
 Renderer::Renderer()
 {
@@ -77,17 +76,7 @@ void Renderer::CalNorm_SetBuffer(const vector<glm::vec3>& vertex)
     SetBuffer(vertex, normal);
 }
 
-void Renderer::InitProgram(GLuint& prog, const string vs_shader, const string fs_shader)
-{
-    //add shaders
-    ShaderInfo shader_info[] =
-    {
-        { GL_VERTEX_SHADER, vs_shader.c_str() },
-        { GL_FRAGMENT_SHADER, fs_shader.c_str() },
-        { GL_NONE, NULL }
-    };
-    prog = LoadShaders(shader_info);
-}
+
 
 void Renderer::SetData(vector<glm::vec3>& _vertex, vector<glm::ivec3>& _face)
 {
@@ -105,20 +94,6 @@ void Renderer::SetData(vector<glm::vec3>& _vertex, vector<glm::ivec3>& _face, ve
     SetBuffer(_vertex, _normal);
 }
 
-void Renderer::SetMVP(GLuint& prog, const glm::mat4& model, const glm::mat4& view, const glm::mat4& projection)
-{
-    glUseProgram(prog);
-
-    GLuint model_matrix_loc = glGetUniformLocation(prog, "model_matrix");
-    GLuint view_matrix_loc = glGetUniformLocation(prog, "view_matrix");
-    GLuint projection_matrix_loc = glGetUniformLocation(prog, "projection_matrix");
-
-    glUniformMatrix4fv(model_matrix_loc, 1, GL_FALSE, &model[0][0]);
-    glUniformMatrix4fv(view_matrix_loc, 1, GL_FALSE, &view[0][0]);
-    glUniformMatrix4fv(projection_matrix_loc, 1, GL_FALSE, &projection[0][0]);
-
-    glUseProgram(0);
-}
 
 void Renderer::Draw(GLuint& prog, const bool draw_point)
 {
@@ -136,4 +111,44 @@ void Renderer::Draw(GLuint& prog, const bool draw_point)
     }
     glUseProgram(0);
     glBindVertexArray(0);
+}
+
+void Renderer::Draw(const bool draw_point)
+{
+    if (!draw_point)
+    {
+        glDrawArrays(GL_TRIANGLES, 0, 3 * face_count);
+    }
+    else
+    {
+        glEnable(GL_PROGRAM_POINT_SIZE);
+        glPointSize(5.0f);
+        glDrawArrays(GL_POINTS, 0, 3 * vertex_count);
+    }
+}
+
+void Renderer::InitProgram(GLuint& prog, const string vs_shader, const string fs_shader)
+{
+    ShaderInfo shader_info[] =
+    {
+        { GL_VERTEX_SHADER, vs_shader.c_str() },
+        { GL_FRAGMENT_SHADER, fs_shader.c_str() },
+        { GL_NONE, NULL }
+    };
+    prog = LoadShaders(shader_info);
+}
+
+void Renderer::SetMVP(GLuint& prog, const glm::mat4& model, const glm::mat4& view, const glm::mat4& projection)
+{
+    glUseProgram(prog);
+
+    GLuint model_matrix_loc = glGetUniformLocation(prog, "model_matrix");
+    GLuint view_matrix_loc = glGetUniformLocation(prog, "view_matrix");
+    GLuint projection_matrix_loc = glGetUniformLocation(prog, "projection_matrix");
+
+    glUniformMatrix4fv(model_matrix_loc, 1, GL_FALSE, &model[0][0]);
+    glUniformMatrix4fv(view_matrix_loc, 1, GL_FALSE, &view[0][0]);
+    glUniformMatrix4fv(projection_matrix_loc, 1, GL_FALSE, &projection[0][0]);
+
+    glUseProgram(0);
 }
