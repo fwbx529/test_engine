@@ -53,15 +53,19 @@ void Scene::Draw()
 {
     glUseProgram(phong_prog);
     sphere_renderer.BindVAO();
+
+    //Draw spheres
     for (int idx = 0; idx < spheres.size(); idx++)
     {
-        //Draw spheres
         glm::mat4 model = glm::translate(glm::mat4(), spheres[idx].pos) *
             glm::scale(glm::mat4(), spheres[idx].radius);
+        int use_color_pure = 1;
         GLuint model_matrix_loc = glGetUniformLocation(phong_prog, "model_matrix");
-        GLuint color_loc = glGetUniformLocation(phong_prog, "color");
+        GLuint color_pure_loc = glGetUniformLocation(phong_prog, "color_pure");
+        GLuint use_color_pure_loc = glGetUniformLocation(phong_prog, "use_color_pure");
         glUniformMatrix4fv(model_matrix_loc, 1, GL_FALSE, &model[0][0]);
-        glUniform3fv(color_loc, 1, &spheres[idx].color[0]);
+        glUniform3fv(color_pure_loc, 1, &spheres[idx].color[0]);
+        glUniform1i(use_color_pure_loc, use_color_pure);
         sphere_renderer.Draw();
     }
     glUseProgram(0);

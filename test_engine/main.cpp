@@ -36,7 +36,7 @@ int main()
     float Strength = 1.0f;
     scene.SetLight(Light(Ambient, LightColor, LightDirection, Shininess, Strength));
     glm::vec3 center(0, 0, -3);
-    glm::vec3 eye;
+    glm::vec3 eye(0, 1, 0);
     scene.SetView(eye, center, aspect);
     scene.AddSphere(Sphere(glm::vec3(0, 0, -3), glm::vec3(0.5f), glm::vec3(0, 1, 1)));
     scene.AddSphere(Sphere(glm::vec3(0, 1, -3), glm::vec3(0.3f), glm::vec3(1, 1, 0)));
@@ -44,8 +44,8 @@ int main()
     while (glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS && !glfwWindowShouldClose(window))
     {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        static const float black[] = { 0.0f, 0.0f, 0.0f, 0.0f };
-        glClearBufferfv(GL_COLOR, 0, black);
+        static const float white[] = { 1.0f, 1.0f, 1.0f, 0.0f };
+        glClearBufferfv(GL_COLOR, 0, white);
 
         scene.Draw();
 
