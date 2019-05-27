@@ -62,3 +62,34 @@ Sphere_renderer::Sphere_renderer(const int segments)
 
     SetData(vertex, face, vertex);
 }
+
+Cube_renderer::Cube_renderer()
+{
+    vector<glm::vec3> vertex =
+    {
+        glm::vec3(-1, -1, -1),
+        glm::vec3(-1, -1, 1),
+        glm::vec3(-1, 1, -1),
+        glm::vec3(-1, 1, 1),
+        glm::vec3(1, -1, -1),
+        glm::vec3(1, -1, 1),
+        glm::vec3(1, 1, -1),
+        glm::vec3(1, 1, 1)
+    };
+    vector<glm::ivec3> face =
+    {
+        glm::ivec3(1, 2, 0),
+        glm::ivec3(1, 3, 2),
+        glm::ivec3(5, 6, 7),
+        glm::ivec3(5, 4, 6),
+        glm::ivec3(0, 5, 1),
+        glm::ivec3(0, 4, 5),
+        glm::ivec3(2, 7, 6),
+        glm::ivec3(2, 3, 7),
+        glm::ivec3(7, 1, 5),
+        glm::ivec3(7, 3, 1),
+        glm::ivec3(6, 0, 2),
+        glm::ivec3(6, 4, 0)
+    };
+    SetData(vertex, face, true);
+}

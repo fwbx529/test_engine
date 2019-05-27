@@ -15,19 +15,27 @@ Renderer::~Renderer()
     glDeleteBuffers(3, vbo_array_buffer);
 }
 
-void Renderer::SetBuffer(const vector<glm::vec3>& vertex, const vector<glm::vec3>& normal)
+void Renderer::SetBuffer(const vector<glm::vec3>& vertex, const vector<glm::vec3>& normal, const bool face_normal)
 {
     vector<glm::vec3> vertex_face(3 * face_count);
     vector<glm::vec3> normal_face(3 * face_count);
+    if (face_normal)
+    {
+        assert(normal_face.size() == normal.size());
+        normal_face = normal;
+    }
     for (unsigned int f = 0; f < face_count; f++)
     {
         glm::ivec3 f_id(face[f]);
         vertex_face[3 * f] = vertex[f_id.x];
         vertex_face[3 * f + 1] = vertex[f_id.y];
         vertex_face[3 * f + 2] = vertex[f_id.z];
-        normal_face[3 * f] = normal[f_id.x];
-        normal_face[3 * f + 1] = normal[f_id.y];
-        normal_face[3 * f + 2] = normal[f_id.z];
+        if (!face_normal)
+        {
+            normal_face[3 * f] = normal[f_id.x];
+            normal_face[3 * f + 1] = normal[f_id.y];
+            normal_face[3 * f + 2] = normal[f_id.z];
+        }
     }
 
     glBindVertexArray(vao);
@@ -55,19 +63,36 @@ void Renderer::SetBuffer(const vector<glm::vec3>& vertex, const vector<glm::vec3
     data_seted = true;
 }
 
-void Renderer::CalNorm_SetBuffer(const vector<glm::vec3>& vertex)
+void Renderer::CalNorm_SetBuffer(const vector<glm::vec3>& vertex, const bool face_normal)
 {
-    vector<glm::vec3> normal(vertex_count, glm::vec3(0, 0, 0));
-    for (unsigned int f = 0; f < face_count; f++)
+    vector<glm::vec3> normal;
+    if (!face_normal)
     {
-        glm::ivec3 f_id(face[f]);
-        glm::vec3 vx(vertex[f_id.x]);
-        glm::vec3 vy(vertex[f_id.y]);
-        glm::vec3 vz(vertex[f_id.z]);
-        glm::vec3 n = glm::cross(vy - vx, vz - vx);
-        normal[f_id.x] += n;
-        normal[f_id.y] += n;
-        normal[f_id.z] += n;
+        normal.resize(vertex_count);
+        for (unsigned int f = 0; f < face_count; f++)
+        {
+            glm::ivec3 f_id(face[f]);
+            glm::vec3 vx(vertex[f_id.x]);
+            glm::vec3 vy(vertex[f_id.y]);
+            glm::vec3 vz(vertex[f_id.z]);
+            glm::vec3 n = glm::cross(vy - vx, vz - vx);
+            normal[f_id.x] += n;
+            normal[f_id.y] += n;
+            normal[f_id.z] += n;
+        }
+    }
+    else
+    {
+        normal.resize(3 * face_count);
+        for (unsigned int f = 0; f < face_count; f++)
+        {
+            glm::ivec3 f_id(face[f]);
+            glm::vec3 vx(vertex[f_id.x]);
+            glm::vec3 vy(vertex[f_id.y]);
+            glm::vec3 vz(vertex[f_id.z]);
+            glm::vec3 n = glm::cross(vy - vx, vz - vx);
+            normal[3 * f] = normal[3 * f + 1] = normal[3 * f + 2] = n;
+        }
     }
     for (unsigned int v = 0; v < vertex_count; v++)
     {
@@ -76,14 +101,12 @@ void Renderer::CalNorm_SetBuffer(const vector<glm::vec3>& vertex)
     SetBuffer(vertex, normal);
 }
 
-
-
-void Renderer::SetData(vector<glm::vec3>& _vertex, vector<glm::ivec3>& _face)
+void Renderer::SetData(vector<glm::vec3>& _vertex, vector<glm::ivec3>& _face, const bool face_normal)
 {
     face = _face;
     vertex_count = (unsigned int)_vertex.size();
     face_count = (unsigned int)_face.size();
-    CalNorm_SetBuffer(_vertex);
+    CalNorm_SetBuffer(_vertex, face_normal);
 }
 
 void Renderer::SetData(vector<glm::vec3>& _vertex, vector<glm::ivec3>& _face, vector<glm::vec3>& _normal)
@@ -93,7 +116,6 @@ void Renderer::SetData(vector<glm::vec3>& _vertex, vector<glm::ivec3>& _face, ve
     face_count = (unsigned int)_face.size();
     SetBuffer(_vertex, _normal);
 }
-
 
 void Renderer::Draw(GLuint& prog, const bool draw_point)
 {
