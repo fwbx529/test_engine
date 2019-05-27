@@ -49,7 +49,7 @@ void Sphere::SetSphereFace(vector<glm::ivec3>& face, const float radius, const i
         int row = segments / 2 - 1;
         int vertex_index = (row - 1) * segments + col;
         int vertex_index_next = (row - 1) * segments + (col + 1) % segments;
-        face[sphere_face_size - 2 * segments + col] = glm::ivec3(vertex_index, vertex_index_next, sphere_vertex_size - 1);
+        face[sphere_face_size - segments + col] = glm::ivec3(vertex_index, vertex_index_next, sphere_vertex_size - 1);
     }
 }
 

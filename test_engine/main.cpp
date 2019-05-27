@@ -10,7 +10,7 @@ void Display(Sphere& s)
     static const float black[] = { 0.0f, 0.0f, 0.0f, 0.0f };
     glClearBufferfv(GL_COLOR, 0, black);
 
-    glm::mat4 model = glm::translate(glm::mat4(), glm::vec3(0, 0, -10));
+    glm::mat4 model = glm::translate(glm::mat4(), glm::vec3(0, 0, -30));
     glm::mat4 view;
     glm::mat4 projection(glm::perspective(glm::radians(90.0f), 1.0f / aspect, 0.1f, 100.0f));
     s.SetUniforms(model, view, projection);
