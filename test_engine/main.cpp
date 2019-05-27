@@ -13,20 +13,19 @@ void Display(Sphere& s)
 
     glm::mat4 model = glm::translate(glm::mat4(), glm::vec3(0, 0, -3));
     int time = clock();
-    glm::vec3 center(0, 0, -1);
-    glm::vec3 eye = center + glm::vec3(cosf((float)time / 1000), 0, sinf((float)time / 1000));
-    glm::mat4 view = glm::lookAt(glm::vec3(0, 0, 0),
-                                 glm::vec3(0, 0, -1),
+    glm::vec3 center(0, 0, -3);
+    glm::vec3 eye;// = center + glm::vec3(cosf((float)time / 1000), 0, sinf((float)time / 1000));
+    glm::mat4 view = glm::lookAt(eye, center,
                                  glm::vec3(0, 1, 0));    
     glm::mat4 projection(glm::perspective(glm::radians(60.0f), 1.0f / aspect, 0.1f, 100.0f));
     s.SetTransform(model, view, projection);
 
-    glm::vec3 Ambient(0.1, 0.1, 0.1);
+    glm::vec3 Ambient(0.5, 0.5, 0.5);
     glm::vec3 LightColor(1, 1, 1);
     glm::vec3 LightDirection(1, 0, 0);
     LightDirection = glm::normalize(LightDirection);
     glm::vec3 HalfVector = glm::normalize(glm::normalize(eye - center) + LightDirection);
-    float Shininess = 10.0f; 
+    float Shininess = 20.0f; 
     float Strength = 1.0f;
     s.SetPhong(Ambient, LightColor, LightDirection, HalfVector, Shininess, Strength);
 
