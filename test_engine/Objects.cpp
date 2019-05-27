@@ -91,5 +91,6 @@ Cube_renderer::Cube_renderer()
         glm::ivec3(6, 0, 2),
         glm::ivec3(6, 4, 0)
     };
+    for (int v = 0; v < vertex.size(); v++) vertex[v] = vertex[v] * 0.5f;
     SetData(vertex, face, true);
 }

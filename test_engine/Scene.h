@@ -18,13 +18,17 @@ class Scene
 {
 public:
     Scene();
-    void AddSphere(Sphere sphere) { spheres.push_back(sphere); }
     void SetLight(Light& _light);
     void SetView(glm::vec3 _eye, glm::vec3 _center, const float aspect);
     void Draw();
+
+    void AddSphere(Sphere& sphere) { spheres.push_back(sphere); }
+    void AddCube(Cube& cube) { cubes.push_back(cube); }
 private:
     Sphere_renderer sphere_renderer;
+    Cube_renderer cube_renderer;
     vector<Sphere> spheres;
+    vector<Cube> cubes;
 
     Light light;
     glm::vec3 eye;
