@@ -21,6 +21,7 @@ public:
     void SetLight(Light& _light);
     void SetView(glm::vec3 _eye, glm::vec3 _center, const float aspect);
     void Draw();
+    void Free();
 
     void AddSphere(Sphere& sphere) { spheres.push_back(sphere); }
     void AddCube(Cube& cube) { cubes.push_back(cube); }

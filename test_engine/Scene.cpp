@@ -104,3 +104,9 @@ void Scene::Draw()
     glUseProgram(0);
     glBindVertexArray(0);
 }
+
+void Scene::Free()
+{
+    for (int idx = 0; idx < spheres.size(); idx++) spheres[idx].Free();
+    for (int idx = 0; idx < cubes.size(); idx++) cubes[idx].Free();
+}
