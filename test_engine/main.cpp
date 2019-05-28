@@ -36,7 +36,7 @@ int main()
     float Strength = 1.5f;
     scene.SetLight(Light(Ambient, LightColor, LightDirection, Shininess, Strength));
     glm::vec3 center(0, 0, -3);
-    glm::vec3 eye(0, 0, 0);
+    glm::vec3 eye(0, 0, 3);
     
     
     Cube room(glm::vec3(0, 0, 0), glm::mat4(), glm::vec3(6, 6, 20), glm::vec3(1, 0.8f, 0.6f), true);
@@ -52,7 +52,8 @@ int main()
     room.SetColor(room_color);
     scene.AddCube(room);
     scene.AddSphere(Sphere(glm::vec3(0, 0, -3), glm::vec3(0.5f), glm::vec3(0, 1, 1)));
-    scene.AddSphere(Sphere(glm::vec3(0, 1, -3), glm::vec3(0.3f), glm::vec3(1, 1, 0)));
+    scene.AddSphere(Sphere(glm::vec3(0, 0.805, -3), glm::vec3(0.3f), glm::vec3(1, 1, 0)));
+    scene.AddSphere(Sphere(glm::vec3(0, 1.21, -3), glm::vec3(0.1f), glm::vec3(1, 0, 1)));
 
     while (glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS && !glfwWindowShouldClose(window))
     {

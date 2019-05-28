@@ -178,22 +178,25 @@ void Scene::CollisionSpheres(Sphere& sphere1, Sphere& sphere2)
     }
 }
 
-void Scene::Simulation()
+void Scene::Simulation(const int total_iter)
 {
     static int time_prev = clock();
     time = clock();
     float timestep = (float)(time - time_prev) / 1000;
     glm::vec3 gravity = glm::vec3(0, -GRAVITY, 0);
-    for (int idx = 0; idx < spheres.size(); idx++)
+    for (int iter = 0; iter < total_iter; iter++)
     {
-        SimulateAcceleration(timestep, gravity, spheres[idx]);
-        CollisionSphereInCube(spheres[idx], cubes[0]);
-    }
-    for (int idx = 0; idx < spheres.size(); idx++)
-    {
-        for (int idy = idx + 1; idy < spheres.size(); idy++)
+        for (int idx = 0; idx < spheres.size(); idx++)
         {
-            CollisionSpheres(spheres[idx], spheres[idy]);
+            SimulateAcceleration(timestep / total_iter, gravity, spheres[idx]);
+            CollisionSphereInCube(spheres[idx], cubes[0]);
+        }
+        for (int idx = 0; idx < spheres.size(); idx++)
+        {
+            for (int idy = idx + 1; idy < spheres.size(); idy++)
+            {
+                CollisionSpheres(spheres[idx], spheres[idy]);
+            }
         }
     }
     time_prev = time;

@@ -22,7 +22,7 @@ public:
     void SetLight(Light& _light);
     void SetView(glm::vec3 _eye, glm::vec3 _center, const float aspect);
     void Draw();
-    void Simulation();
+    void Simulation(const int total_iter = 10);
     void Free();
 
     void AddSphere(Sphere& sphere) { spheres.push_back(sphere); }
