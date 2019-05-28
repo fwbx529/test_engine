@@ -116,7 +116,7 @@ template <class Object>
 void Scene::SimulateAcceleration(const float timestep, const glm::vec3 acceleration, Object& object)
 {
     object.velocity += acceleration * timestep;
-    object.pos += object.velocity;
+    object.pos += object.velocity * timestep;
 }
 
 void Scene::Simulation()
