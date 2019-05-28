@@ -105,6 +105,33 @@ void Scene::Draw()
     glBindVertexArray(0);
 }
 
+template <class Object>
+void Scene::SimulateForce(const float timestep, const glm::vec3 force, Object& object)
+{
+    object.velocity += force / object.mass * timestep;
+    object.pos += object.velocity;
+}
+
+template <class Object>
+void Scene::SimulateAcceleration(const float timestep, const glm::vec3 acceleration, Object& object)
+{
+    object.velocity += acceleration * timestep;
+    object.pos += object.velocity;
+}
+
+void Scene::Simulation()
+{
+    static int time_prev = clock();
+    time = clock();
+    float timestep = (float)(time - time_prev) / 1000;
+    glm::vec3 gravity = glm::vec3(0, -9.8f, 0);
+    for (int idx = 0; idx < spheres.size(); idx++)
+    {
+        SimulateAcceleration(timestep, gravity, spheres[idx]);
+    }
+    time_prev = time;
+}
+
 void Scene::Free()
 {
     for (int idx = 0; idx < spheres.size(); idx++) spheres[idx].Free();

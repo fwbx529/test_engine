@@ -3,6 +3,7 @@
 #include <vector>
 #include <string>
 #include <iostream>
+#include <time.h>
 #define _USE_MATH_DEFINES
 #include <math.h>
 

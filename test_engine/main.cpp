@@ -60,6 +60,7 @@ int main()
         static const float white[] = { 1.0f, 1.0f, 1.0f, 0.0f };
         glClearBufferfv(GL_COLOR, 0, white);
 
+        scene.Simulation();
         scene.SetView(eye, center, aspect);
         scene.Draw();
 
