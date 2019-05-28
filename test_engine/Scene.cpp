@@ -108,15 +108,17 @@ void Scene::Draw()
 template <class Object>
 void Scene::SimulateForce(const float timestep, const glm::vec3 force, Object& object)
 {
-    object.velocity += force / object.mass * timestep;
+    object.velocity += force / object.mass * 0.5f * timestep;
     object.pos += object.velocity;
+    object.velocity += force / object.mass * 0.5f * timestep;
 }
 
 template <class Object>
 void Scene::SimulateAcceleration(const float timestep, const glm::vec3 acceleration, Object& object)
 {
-    object.velocity += acceleration * timestep;
+    object.velocity += acceleration * 0.5f * timestep;
     object.pos += object.velocity * timestep;
+    object.velocity += acceleration * 0.5f * timestep;
 }
 
 template <class Object>
@@ -124,15 +126,27 @@ void Scene::CollisionRange(glm::vec3 edge, Object& object, const bool min_edge)
 {
     if (min_edge)
     {
-        if (object.pos.x < edge.x) object.velocity.x *= -1;
-        if (object.pos.y < edge.y) object.velocity.y *= -1;
-        if (object.pos.z < edge.z) object.velocity.z *= -1;
+        if (object.pos.x < edge.x) {
+            object.velocity.x *= -1;
+        }
+        if (object.pos.y < edge.y) {
+            object.velocity.y *= -1;
+        }
+        if (object.pos.z < edge.z) {
+            object.velocity.z *= -1;
+        }
     }
     else
     {
-        if (object.pos.x > edge.x) object.velocity.x *= -1;
-        if (object.pos.y > edge.y) object.velocity.y *= -1;
-        if (object.pos.z > edge.z) object.velocity.z *= -1;
+        if (object.pos.x > edge.x) {
+            object.velocity.x *= -1;
+        }
+        if (object.pos.y > edge.y) {
+            object.velocity.y *= -1;
+        }
+        if (object.pos.z > edge.z) {
+            object.velocity.z *= -1;
+        }
     }
 }
 
@@ -153,8 +167,8 @@ void Scene::Simulation()
     glm::vec3 gravity = glm::vec3(0, -9.8f, 0);
     for (int idx = 0; idx < spheres.size(); idx++)
     {
-        CollisionSphereInCube(spheres[idx], cubes[0]);
         SimulateAcceleration(timestep, gravity, spheres[idx]);
+        CollisionSphereInCube(spheres[idx], cubes[0]);
     }
     time_prev = time;
 }
