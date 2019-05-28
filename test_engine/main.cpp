@@ -44,8 +44,8 @@ int main()
     {
         glm::vec3(0.5, 1, 1),
         glm::vec3(0.5, 1, 1),
-        glm::vec3(1, 0.5, 1),
-        glm::vec3(1, 0.5, 1),
+        glm::vec3(0.5, 1, 0.5),
+        glm::vec3(0.5, 1, 0.5),
         glm::vec3(1, 1, 0.5),
         glm::vec3(1, 1, 0.5)
     };
@@ -53,7 +53,6 @@ int main()
     scene.AddCube(room);
     scene.AddSphere(Sphere(glm::vec3(0, 0, -3), glm::vec3(0.5f), glm::vec3(0, 1, 1)));
     scene.AddSphere(Sphere(glm::vec3(0, 1, -3), glm::vec3(0.3f), glm::vec3(1, 1, 0)));
-    scene.AddCube(Cube(glm::vec3(1, 0, -3), glm::mat4(), glm::vec3(1, 1, 1), glm::vec3(0.6f, 0.8f, 1)));
 
     while (glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS && !glfwWindowShouldClose(window))
     {
@@ -68,6 +67,7 @@ int main()
         glfwPollEvents();
     }
 
+    scene.Free();
     glfwDestroyWindow(window);
     glfwTerminate();
 
