@@ -34,6 +34,7 @@ private:
     template <class Object>
     void CollisionRange(glm::vec3 edge, Object& object, const bool min_edge);
     void CollisionSphereInCube(Sphere& sphere, const Cube& cube);
+    void CollisionSpheres(Sphere& sphere1, Sphere& sphere2);
     Sphere_renderer sphere_renderer;
     Cube_renderer cube_renderer;
     vector<Sphere> spheres;

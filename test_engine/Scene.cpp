@@ -105,6 +105,7 @@ void Scene::Draw()
     glBindVertexArray(0);
 }
 
+//4th order Runge-Kutta
 template <class Object>
 void Scene::SimulateForce(const float timestep, const glm::vec3 force, Object& object)
 {
@@ -113,6 +114,7 @@ void Scene::SimulateForce(const float timestep, const glm::vec3 force, Object& o
     object.velocity += force / object.mass * 0.5f * timestep;
 }
 
+//4th order Runge-Kutta
 template <class Object>
 void Scene::SimulateAcceleration(const float timestep, const glm::vec3 acceleration, Object& object)
 {
@@ -158,6 +160,24 @@ void Scene::CollisionSphereInCube(Sphere& sphere, const Cube& cube)
     CollisionRange(cube_max, sphere, false);
 }
 
+//Attention: not for ellipse
+void Scene::CollisionSpheres(Sphere& sphere1, Sphere& sphere2)
+{
+    float dis = glm::length(sphere1.pos - sphere2.pos);
+    if (dis < sphere1.radius[0] + sphere2.radius[0])
+    {
+        float m1 = sphere1.mass, m2 = sphere2.mass;
+        glm::vec3 v1 = sphere1.velocity, v2 = sphere2.velocity;
+        glm::vec3 d = glm::normalize(sphere2.pos - sphere1.pos);
+        glm::vec3 v1_ = sphere1.velocity - sphere2.velocity;
+        glm::vec3 v2_ = 2.0f * d * m1 / (m1 + m2) * glm::dot(v1_, d);
+        glm::vec3 u2 = v2 + v2_;
+        glm::vec3 u1 = (m1*v1 + m2*v2 - m2*u2) / m1;
+        sphere1.velocity = u1;
+        sphere2.velocity = u2;
+    }
+}
+
 
 void Scene::Simulation()
 {
@@ -169,6 +189,13 @@ void Scene::Simulation()
     {
         SimulateAcceleration(timestep, gravity, spheres[idx]);
         CollisionSphereInCube(spheres[idx], cubes[0]);
+    }
+    for (int idx = 0; idx < spheres.size(); idx++)
+    {
+        for (int idy = idx + 1; idy < spheres.size(); idy++)
+        {
+            CollisionSpheres(spheres[idx], spheres[idy]);
+        }
     }
     time_prev = time;
 }
