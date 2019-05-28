@@ -18,9 +18,10 @@ struct Cube
     glm::mat4 rotation;
     glm::vec3 size;
     glm::vec3 color;
+    bool inside;
     Cube() {}
-    Cube(glm::vec3 _pos, glm::mat4 _rotation, glm::vec3 _size, glm::vec3 _color) :
-        pos(_pos), rotation(_rotation), size(_size), color(_color) {}
+    Cube(glm::vec3 _pos, glm::mat4 _rotation, glm::vec3 _size, glm::vec3 _color, bool _inside = false) :
+        pos(_pos), rotation(_rotation), size(_size), color(_color), inside(_inside) {}
 };
 
 class Sphere_renderer:public Renderer

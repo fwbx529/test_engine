@@ -60,11 +60,14 @@ void Scene::Draw()
         glm::mat4 model = 
             glm::translate(glm::mat4(), spheres[idx].pos) *
             glm::scale(glm::mat4(), spheres[idx].radius);
+        glm::mat4 normal_matrix = model;
         int use_color_pure = 1;
         GLuint model_matrix_loc = glGetUniformLocation(phong_prog, "model_matrix");
+        GLuint normal_matrix_loc = glGetUniformLocation(phong_prog, "normal_matrix");
         GLuint color_pure_loc = glGetUniformLocation(phong_prog, "color_pure");
         GLuint use_color_pure_loc = glGetUniformLocation(phong_prog, "use_color_pure");
         glUniformMatrix4fv(model_matrix_loc, 1, GL_FALSE, &model[0][0]);
+        glUniformMatrix4fv(normal_matrix_loc, 1, GL_FALSE, &normal_matrix[0][0]);
         glUniform3fv(color_pure_loc, 1, &spheres[idx].color[0]);
         glUniform1i(use_color_pure_loc, use_color_pure);
         sphere_renderer.Draw();
@@ -78,11 +81,20 @@ void Scene::Draw()
             glm::translate(glm::mat4(), cubes[idx].pos) *
             cubes[idx].rotation * 
             glm::scale(glm::mat4(), cubes[idx].size);
+        glm::mat4 normal_matrix = model;
+        if (cubes[idx].inside)
+        {
+            glm::mat4 inv(-1.0f);
+            inv[3][3] = 1;
+            normal_matrix = normal_matrix * inv;
+        }
         int use_color_pure = 1;
         GLuint model_matrix_loc = glGetUniformLocation(phong_prog, "model_matrix");
+        GLuint normal_matrix_loc = glGetUniformLocation(phong_prog, "normal_matrix");
         GLuint color_pure_loc = glGetUniformLocation(phong_prog, "color_pure");
         GLuint use_color_pure_loc = glGetUniformLocation(phong_prog, "use_color_pure");
         glUniformMatrix4fv(model_matrix_loc, 1, GL_FALSE, &model[0][0]);
+        glUniformMatrix4fv(normal_matrix_loc, 1, GL_FALSE, &normal_matrix[0][0]);
         glUniform3fv(color_pure_loc, 1, &cubes[idx].color[0]);
         glUniform1i(use_color_pure_loc, use_color_pure);
         cube_renderer.Draw();

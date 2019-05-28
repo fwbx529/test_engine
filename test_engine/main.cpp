@@ -28,19 +28,20 @@ int main()
 
     Scene scene;
 
-    glm::vec3 Ambient(0.5, 0.5, 0.5);
-    glm::vec3 LightColor(1, 1, 1);
+    glm::vec3 Ambient(0.5);
+    glm::vec3 LightColor(0.5);
     glm::vec3 LightDirection(3, 5, 8);
     LightDirection = glm::normalize(LightDirection);
     float Shininess = 20.0f;
-    float Strength = 1.0f;
+    float Strength = 1.5f;
     scene.SetLight(Light(Ambient, LightColor, LightDirection, Shininess, Strength));
     glm::vec3 center(0, 0, -3);
-    glm::vec3 eye(0, 1, 0);
+    glm::vec3 eye(0, 0, 0);
     
     scene.AddSphere(Sphere(glm::vec3(0, 0, -3), glm::vec3(0.5f), glm::vec3(0, 1, 1)));
     scene.AddSphere(Sphere(glm::vec3(0, 1, -3), glm::vec3(0.3f), glm::vec3(1, 1, 0)));
     scene.AddCube(Cube(glm::vec3(1, 0, -3), glm::mat4(), glm::vec3(1, 1, 1), glm::vec3(0.6f, 0.8f, 1)));
+    scene.AddCube(Cube(glm::vec3(0, 0, 0), glm::mat4(), glm::vec3(6, 6, 20), glm::vec3(1, 0.8f, 0.6f), true));
 
     while (glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS && !glfwWindowShouldClose(window))
     {
@@ -48,7 +49,6 @@ int main()
         static const float white[] = { 1.0f, 1.0f, 1.0f, 0.0f };
         glClearBufferfv(GL_COLOR, 0, white);
 
-        int time = clock();  eye = center + 3.0f * glm::vec3(sinf((float)time / 1000), 0, cosf((float)time / 1000));
         scene.SetView(eye, center, aspect);
         scene.Draw();
 
