@@ -10,7 +10,7 @@ void APIENTRY glDebugOutput(GLenum source, GLenum type, GLuint id, GLenum severi
 
 int main()
 {
-    srand(time(0));
+    srand((int)time(0));
 
     const int width = 800;
     const int height = 600;
