@@ -119,6 +119,32 @@ void Scene::SimulateAcceleration(const float timestep, const glm::vec3 accelerat
     object.pos += object.velocity * timestep;
 }
 
+template <class Object>
+void Scene::CollisionRange(glm::vec3 edge, Object& object, const bool min_edge)
+{
+    if (min_edge)
+    {
+        if (object.pos.x < edge.x) object.velocity.x *= -1;
+        if (object.pos.y < edge.y) object.velocity.y *= -1;
+        if (object.pos.z < edge.z) object.velocity.z *= -1;
+    }
+    else
+    {
+        if (object.pos.x > edge.x) object.velocity.x *= -1;
+        if (object.pos.y > edge.y) object.velocity.y *= -1;
+        if (object.pos.z > edge.z) object.velocity.z *= -1;
+    }
+}
+
+void Scene::CollisionSphereInCube(Sphere& sphere, const Cube& cube)
+{
+    glm::vec3 cube_min = cube.pos - 0.5f * cube.size + sphere.radius;
+    glm::vec3 cube_max = cube.pos + 0.5f * cube.size - sphere.radius;
+    CollisionRange(cube_min, sphere, true);
+    CollisionRange(cube_max, sphere, false);
+}
+
+
 void Scene::Simulation()
 {
     static int time_prev = clock();
@@ -127,6 +153,7 @@ void Scene::Simulation()
     glm::vec3 gravity = glm::vec3(0, -9.8f, 0);
     for (int idx = 0; idx < spheres.size(); idx++)
     {
+        CollisionSphereInCube(spheres[idx], cubes[0]);
         SimulateAcceleration(timestep, gravity, spheres[idx]);
     }
     time_prev = time;

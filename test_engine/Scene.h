@@ -31,6 +31,9 @@ private:
     void SimulateForce(const float timestep, const glm::vec3 force, Object& object);
     template <class Object>
     void SimulateAcceleration(const float timestep, const glm::vec3 acceleration, Object& object);
+    template <class Object>
+    void CollisionRange(glm::vec3 edge, Object& object, const bool min_edge);
+    void CollisionSphereInCube(Sphere& sphere, const Cube& cube);
     Sphere_renderer sphere_renderer;
     Cube_renderer cube_renderer;
     vector<Sphere> spheres;
