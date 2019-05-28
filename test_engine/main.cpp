@@ -38,10 +38,22 @@ int main()
     glm::vec3 center(0, 0, -3);
     glm::vec3 eye(0, 0, 0);
     
+    
+    Cube room(glm::vec3(0, 0, 0), glm::mat4(), glm::vec3(6, 6, 20), glm::vec3(1, 0.8f, 0.6f), true);
+    vector<glm::vec3> room_color =
+    {
+        glm::vec3(0.5, 1, 1),
+        glm::vec3(0.5, 1, 1),
+        glm::vec3(1, 0.5, 1),
+        glm::vec3(1, 0.5, 1),
+        glm::vec3(1, 1, 0.5),
+        glm::vec3(1, 1, 0.5)
+    };
+    room.SetColor(room_color);
+    scene.AddCube(room);
     scene.AddSphere(Sphere(glm::vec3(0, 0, -3), glm::vec3(0.5f), glm::vec3(0, 1, 1)));
     scene.AddSphere(Sphere(glm::vec3(0, 1, -3), glm::vec3(0.3f), glm::vec3(1, 1, 0)));
     scene.AddCube(Cube(glm::vec3(1, 0, -3), glm::mat4(), glm::vec3(1, 1, 1), glm::vec3(0.6f, 0.8f, 1)));
-    scene.AddCube(Cube(glm::vec3(0, 0, 0), glm::mat4(), glm::vec3(6, 6, 20), glm::vec3(1, 0.8f, 0.6f), true));
 
     while (glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS && !glfwWindowShouldClose(window))
     {

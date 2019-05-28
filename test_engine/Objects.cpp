@@ -63,6 +63,28 @@ Sphere_renderer::Sphere_renderer(const int segments)
     SetData(vertex, face, vertex);
 }
 
+void Cube::SetColor(vector<glm::vec3>& color)
+{
+    assert(color.size() == 6);
+    if (!color_seted)
+    {
+        glCreateBuffers(1, &vbo_color);
+    }
+    color_seted = true;
+    vector<glm::vec3> color_face(36);
+    for (int i = 0; i < 6; i++)
+        for (int j = 0; j < 6; j++)
+            color_face[i * 6 + j] = color[i];
+    glNamedBufferStorage(vbo_color, color_face.size() * sizeof(glm::vec3), color_face.data(), GL_DYNAMIC_STORAGE_BIT);
+}
+
+void Cube::BindColorVBO()
+{
+    glBindBuffer(GL_ARRAY_BUFFER, vbo_color);
+    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+    glEnableVertexAttribArray(2);
+}
+
 Cube_renderer::Cube_renderer()
 {
     vector<glm::vec3> vertex =

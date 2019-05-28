@@ -2,8 +2,9 @@
 
 #include "Renderer.h"
 
-struct Sphere
+class Sphere
 {
+public:
     glm::vec3 pos;
     glm::vec3 radius;
     glm::vec3 color;
@@ -12,8 +13,9 @@ struct Sphere
         pos(_pos), radius(_radius), color(_color) {}
 };
 
-struct Cube
+class Cube
 {
+public:
     glm::vec3 pos;
     glm::mat4 rotation;
     glm::vec3 size;
@@ -22,6 +24,13 @@ struct Cube
     Cube() {}
     Cube(glm::vec3 _pos, glm::mat4 _rotation, glm::vec3 _size, glm::vec3 _color, bool _inside = false) :
         pos(_pos), rotation(_rotation), size(_size), color(_color), inside(_inside) {}
+    ~Cube() { glDeleteBuffers(1, &vbo_color); }
+
+    void SetColor(vector<glm::vec3>& color);
+    void BindColorVBO();
+    bool color_seted = false;
+private:
+    GLuint vbo_color;
 };
 
 class Sphere_renderer:public Renderer

@@ -17,6 +17,7 @@ out vec4 Position;
 void main()
 {
     if (use_color_pure != 0) Color = vec4(color_pure, 1.0f);
+    else Color = vec4(color, 1.0f);
     Normal = (normal_matrix * vec4(normal, 0.0f)).xyz;
     Normal = normalize(Normal);
     Position = model_matrix * vec4(position, 1);

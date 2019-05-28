@@ -88,7 +88,7 @@ void Scene::Draw()
             inv[3][3] = 1;
             normal_matrix = normal_matrix * inv;
         }
-        int use_color_pure = 1;
+        int use_color_pure = (int)(cubes[idx].color_seted == false);
         GLuint model_matrix_loc = glGetUniformLocation(phong_prog, "model_matrix");
         GLuint normal_matrix_loc = glGetUniformLocation(phong_prog, "normal_matrix");
         GLuint color_pure_loc = glGetUniformLocation(phong_prog, "color_pure");
@@ -97,6 +97,7 @@ void Scene::Draw()
         glUniformMatrix4fv(normal_matrix_loc, 1, GL_FALSE, &normal_matrix[0][0]);
         glUniform3fv(color_pure_loc, 1, &cubes[idx].color[0]);
         glUniform1i(use_color_pure_loc, use_color_pure);
+        if (!use_color_pure) cubes[idx].BindColorVBO();
         cube_renderer.Draw();
     }
 
