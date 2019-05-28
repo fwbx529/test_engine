@@ -61,6 +61,7 @@ int main()
         glClearBufferfv(GL_COLOR, 0, white);
 
         scene.Simulation();
+        //cout << scene.CalculateEnergy() << endl;
         scene.SetView(eye, center, aspect);
         scene.Draw();
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Objects.h"
+#define GRAVITY 9.8f
 
 struct Light
 {
@@ -26,6 +27,7 @@ public:
 
     void AddSphere(Sphere& sphere) { spheres.push_back(sphere); }
     void AddCube(Cube& cube) { cubes.push_back(cube); }
+    float CalculateEnergy();
 private:
     template <class Object>
     void SimulateForce(const float timestep, const glm::vec3 force, Object& object);

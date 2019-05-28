@@ -178,13 +178,12 @@ void Scene::CollisionSpheres(Sphere& sphere1, Sphere& sphere2)
     }
 }
 
-
 void Scene::Simulation()
 {
     static int time_prev = clock();
     time = clock();
     float timestep = (float)(time - time_prev) / 1000;
-    glm::vec3 gravity = glm::vec3(0, -9.8f, 0);
+    glm::vec3 gravity = glm::vec3(0, -GRAVITY, 0);
     for (int idx = 0; idx < spheres.size(); idx++)
     {
         SimulateAcceleration(timestep, gravity, spheres[idx]);
@@ -198,6 +197,19 @@ void Scene::Simulation()
         }
     }
     time_prev = time;
+}
+
+float Scene::CalculateEnergy()
+{
+    float energy = 0;
+    for (int idx = 0; idx < spheres.size(); idx++)
+    {
+        float m = spheres[idx].mass;
+        float v = glm::length(spheres[idx].velocity);
+
+        energy += (0.5f * m * v * v + m * GRAVITY * spheres[idx].pos.y);
+    }
+    return energy;
 }
 
 void Scene::Free()
