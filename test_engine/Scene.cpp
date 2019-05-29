@@ -238,28 +238,26 @@ void Scene::CollisionSphereInCube(Sphere& sphere, const Cube& cube, const bool e
 }
 
 //Attention: not for ellipse
-void Scene::CollisionSpheres(Sphere& sphere1, Sphere& sphere2, const bool explode)
+void Scene::CollisionSpheres(Sphere& sphere1, Sphere& sphere2, const bool explode, const bool exist1, const bool exist2)
 {
     if (!sphere1.exist || !sphere2.exist) return;
     float dis = glm::length(sphere1.pos - sphere2.pos);
     if (dis < sphere1.radius[0] + sphere2.radius[0])
     {
-        if (!explode)
+        float m1 = sphere1.mass, m2 = sphere2.mass;
+        glm::vec3 v1 = sphere1.velocity, v2 = sphere2.velocity;
+        glm::vec3 d = glm::normalize(sphere2.pos - sphere1.pos);
+        glm::vec3 v1_ = sphere1.velocity - sphere2.velocity;
+        glm::vec3 v2_ = 2.0f * d * m1 / (m1 + m2) * glm::dot(v1_, d);
+        glm::vec3 u2 = v2 + v2_;
+        glm::vec3 u1 = (m1*v1 + m2*v2 - m2*u2) / m1;
+        sphere1.velocity = u1;
+        sphere2.velocity = u2;
+
+        if (explode)
         {
-            float m1 = sphere1.mass, m2 = sphere2.mass;
-            glm::vec3 v1 = sphere1.velocity, v2 = sphere2.velocity;
-            glm::vec3 d = glm::normalize(sphere2.pos - sphere1.pos);
-            glm::vec3 v1_ = sphere1.velocity - sphere2.velocity;
-            glm::vec3 v2_ = 2.0f * d * m1 / (m1 + m2) * glm::dot(v1_, d);
-            glm::vec3 u2 = v2 + v2_;
-            glm::vec3 u1 = (m1*v1 + m2*v2 - m2*u2) / m1;
-            sphere1.velocity = u1;
-            sphere2.velocity = u2;
-        }
-        else
-        {
-            sphere1.exist = false;
-            sphere2.exist = false;
+            if (!exist1) sphere1.exist = false;
+            if (!exist2) sphere2.exist = false;
         }
     }
 }
@@ -299,13 +297,13 @@ void Scene::Bullet(const int total_iter)
         for (int idx = 0; idx < spheres.size(); idx++)
         {
             SimulateAcceleration(timestep / total_iter, glm::vec3(0), spheres[idx]);
-            CollisionSphereInCube(spheres[idx], cubes[0], true);
+            CollisionSphereInCube(spheres[idx], cubes[0]);
         }
         for (int idx = 0; idx < spheres.size(); idx++)
         {
             for (int idy = idx + 1; idy < spheres.size(); idy++)
             {
-                CollisionSpheres(spheres[idx], spheres[idy], true);
+                CollisionSpheres(spheres[idx], spheres[idy], true, idx != 0, idy != 0);
             }
         }
     }

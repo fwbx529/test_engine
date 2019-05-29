@@ -44,7 +44,7 @@ int main()
 
     Scene scene(window);
     
-    Cube room(glm::vec3(0, 0, 0), glm::mat4(), glm::vec3(6, 6, 20), glm::vec3(1, 0.8f, 0.6f), true);
+    Cube room(glm::vec3(0, 0, -5), glm::mat4(), glm::vec3(6, 6, 10), glm::vec3(1, 0.8f, 0.6f), true);
     vector<glm::vec3> room_color =
     {
         glm::vec3(0.5, 1, 1),
@@ -56,7 +56,7 @@ int main()
     };
     room.SetColor(room_color);
     scene.AddCube(room);
-    scene.AddSphere(Sphere(scene.GetPosFront(0.5f), glm::vec3(0.01f), rand_vec3()));
+    scene.AddSphere(Sphere(scene.GetPosFront(0.5f), glm::vec3(0.05f), rand_vec3()));
     scene.spheres[0].exist = false;
     for (int i = -5; i <= 5; i++)
     {
