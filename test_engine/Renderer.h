@@ -26,9 +26,10 @@ public:
     void SetData(vector<glm::vec3>& _vertex, vector<glm::ivec3>& _face, const bool face_normal = false);
     void SetData(vector<glm::vec3>& _vertex, vector<glm::ivec3>& _face, vector<glm::vec3>& _normal);
     void SetData2D(vector<glm::vec2>& _vertex, vector<glm::ivec3>& _face);
+    void SetData1D(vector<glm::vec2>& _vertex);
     void BindVAO() { glBindVertexArray(vao); }
-    void Draw(GLuint& prog, const bool draw_point = false);
-    void Draw(const bool draw_point = false);
+    void Draw(GLuint& prog, const bool draw_point = false, const bool draw_line = false);
+    void Draw(const bool draw_point = false, const bool draw_line = false);
 
     static void InitProgram(GLuint& prog, const string vs_shader, const string fs_shader);
     static void SetMVP(GLuint& prog, const glm::mat4& model, const glm::mat4& view, const glm::mat4& projection);

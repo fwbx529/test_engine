@@ -24,7 +24,7 @@ public:
     void SetView(glm::vec3 _eye, glm::vec3 _center, const float aspect);
     void Draw();
     void Simulation(const int total_iter = 10);
-    void Bullet();
+    void Bullet(const int total_iter = 10);
     void Free();
 
     void AddSphere(Sphere& sphere) { spheres.push_back(sphere); }

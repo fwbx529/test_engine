@@ -62,10 +62,10 @@ int main()
     {
         for (int j = -5; j <= 5; j++)
         {
-            scene.AddSphere(Sphere(glm::vec3(i*0.3f, j*0.3f, -8.0f), glm::vec3(0.05f), rand_vec3()));
+            scene.AddSphere(Sphere(glm::vec3(i*0.3f, j*0.3f, -8.0f), glm::vec3(0.1f), rand_vec3()));
         }
     }
-    scene.AddLogo(Logo(logo_cross, glm::vec3(0.8, 0.8, 0.8)));
+    scene.AddLogo(Logo(logo_cross, glm::vec3(0.0f)));
 
     while (glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS && !glfwWindowShouldClose(window))
     {
@@ -79,7 +79,7 @@ int main()
             shoot = false;
             release = true;
             scene.spheres[0].exist = true;
-            scene.spheres[0].velocity = 10.0f * scene.GetDirFront();
+            scene.spheres[0].velocity = 20.0f * scene.GetDirFront();
         }
         if (!scene.spheres[0].exist)
         {

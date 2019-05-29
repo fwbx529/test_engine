@@ -119,17 +119,17 @@ Cube_renderer::Cube_renderer()
 
 Cross_renderer::Cross_renderer()
 {
+    int viewport[4];
+    glGetIntegerv(GL_VIEWPORT, viewport);
+    float width = (float)viewport[2]; float height = (float)viewport[3];
+    float aspect = height / width;
     vector<glm::vec2> vertex =
     {
-        glm::vec2(-0.1, -0.1),
-        glm::vec2(-0.1, 0.1),
-        glm::vec2(0.1, 0.1),
-        glm::vec2(0.1, -0.1),
+        glm::vec2(-0.05, 0),
+        glm::vec2(0.05, 0),
+        glm::vec2(0, -0.05 / aspect),
+        glm::vec2(0, 0.05 / aspect),
     };
-    vector<glm::ivec3> face =
-    {
-        glm::ivec3(1, 2, 0),
-        glm::ivec3(1, 3, 2),
-    };
-    SetData2D(vertex, face);
+
+    SetData1D(vertex);
 }

@@ -93,7 +93,7 @@ void Scene::SetView(glm::vec3 _eye, glm::vec3 _center, const float aspect)
 
 void Scene::Draw()
 {
-
+    //Draw objects
     glUseProgram(prog_phong);
     //Draw spheres
     sphere_renderer.BindVAO();
@@ -145,17 +145,19 @@ void Scene::Draw()
         cube_renderer.Draw();
     }
 
-    glUseProgram(prog_logo);
     //Draw logos
+    glUseProgram(prog_logo);
+    //Draw cross
+    cross_renderer.BindVAO();
     for (int idx = 0; idx < logos.size(); idx++)
     {
-        if (logos[idx].type == logo_cross) cross_renderer.BindVAO();
+        if (logos[idx].type != logo_cross) continue;
         int use_color_pure = 1;
         GLuint color_pure_loc = glGetUniformLocation(prog_logo, "color_pure");
         GLuint use_color_pure_loc = glGetUniformLocation(prog_logo, "use_color_pure");
         glUniform3fv(color_pure_loc, 1, &logos[idx].color[0]);
         glUniform1i(use_color_pure_loc, use_color_pure);
-        cross_renderer.Draw();
+        cross_renderer.Draw(false, true);
     }
 
     glUseProgram(0);
@@ -285,22 +287,25 @@ void Scene::Simulation(const int total_iter)
     time_prev = time;
 }
 
-void Scene::Bullet()
+void Scene::Bullet(const int total_iter)
 {
     static int time_prev = clock();
     time = clock();
     float timestep = (float)(time - time_prev) / 1000;
 
-    for (int idx = 0; idx < spheres.size(); idx++)
+    for (int iter = 0; iter < total_iter; iter++)
     {
-        SimulateAcceleration(timestep, glm::vec3(0), spheres[idx]);
-        CollisionSphereInCube(spheres[idx], cubes[0], true);
-    }
-    for (int idx = 0; idx < spheres.size(); idx++)
-    {
-        for (int idy = idx + 1; idy < spheres.size(); idy++)
+        for (int idx = 0; idx < spheres.size(); idx++)
         {
-            CollisionSpheres(spheres[idx], spheres[idy], true);
+            SimulateAcceleration(timestep / total_iter, glm::vec3(0), spheres[idx]);
+            CollisionSphereInCube(spheres[idx], cubes[0], true);
+        }
+        for (int idx = 0; idx < spheres.size(); idx++)
+        {
+            for (int idy = idx + 1; idy < spheres.size(); idy++)
+            {
+                CollisionSpheres(spheres[idx], spheres[idy], true);
+            }
         }
     }
     time_prev = time;

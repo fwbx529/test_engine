@@ -155,36 +155,50 @@ void Renderer::SetData2D(vector<glm::vec2>& _vertex, vector<glm::ivec3>& _face)
     SetBuffer2D(_vertex);
 }
 
-
-void Renderer::Draw(GLuint& prog, const bool draw_point)
+void Renderer::SetData1D(vector<glm::vec2>& _vertex)
 {
-    glUseProgram(prog);
+    vertex_count = (unsigned int)_vertex.size();
     glBindVertexArray(vao);
-    if (!draw_point)
+    if (!data_seted)
     {
-        glDrawArrays(GL_TRIANGLES, 0, 3 * face_count);
+        glBindBuffer(GL_ARRAY_BUFFER, vbo_array_buffer[0]);
+        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, NULL);
+        glEnableVertexAttribArray(0);
+        glNamedBufferStorage(vbo_array_buffer[0], vertex_count * sizeof(glm::vec2), _vertex.data(), GL_DYNAMIC_STORAGE_BIT);
     }
     else
     {
-        glEnable(GL_PROGRAM_POINT_SIZE);
-        glPointSize(5.0f);
-        glDrawArrays(GL_POINTS, 0, 3 * vertex_count);
+        glNamedBufferSubData(vbo_array_buffer[0], 0, vertex_count * sizeof(glm::vec2), _vertex.data());
     }
+    glBindVertexArray(0);
+
+    data_seted = true;
+}
+
+void Renderer::Draw(GLuint& prog, const bool draw_point, const bool draw_line)
+{
+    glUseProgram(prog);
+    glBindVertexArray(vao);
+    Draw(draw_point, draw_line);
     glUseProgram(0);
     glBindVertexArray(0);
 }
 
-void Renderer::Draw(const bool draw_point)
+void Renderer::Draw(const bool draw_point, const bool draw_line)
 {
-    if (!draw_point)
-    {
-        glDrawArrays(GL_TRIANGLES, 0, 3 * face_count);
-    }
-    else
+    if (draw_point)
     {
         glEnable(GL_PROGRAM_POINT_SIZE);
         glPointSize(5.0f);
-        glDrawArrays(GL_POINTS, 0, 3 * vertex_count);
+        glDrawArrays(GL_POINTS, 0, 3 * face_count);
+    }
+    else if (draw_line)
+    {
+        glDrawArrays(GL_LINES, 0, vertex_count);
+    }
+    else
+    {
+        glDrawArrays(GL_TRIANGLES, 0, 3 * face_count);
     }
 }
 
