@@ -297,7 +297,7 @@ void Scene::Bullet(const int total_iter)
         for (int idx = 0; idx < spheres.size(); idx++)
         {
             SimulateAcceleration(timestep / total_iter, glm::vec3(0), spheres[idx]);
-            CollisionSphereInCube(spheres[idx], cubes[0]);
+            CollisionSphereInCube(spheres[idx], cubes[0], idx == 0);
         }
         for (int idx = 0; idx < spheres.size(); idx++)
         {
