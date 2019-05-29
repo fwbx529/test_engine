@@ -29,11 +29,17 @@ public:
 
     void AddSphere(Sphere& sphere) { spheres.push_back(sphere); }
     void AddCube(Cube& cube) { cubes.push_back(cube); }
-    void SetSpherePos(const glm::vec3 pos, const int idx) { assert(idx >= 0 && idx < spheres.size()); spheres[idx].pos = pos; }
-    void SetSphereVelocity(const glm::vec3 velocity, const int idx) { assert(idx >= 0 && idx < spheres.size()); spheres[idx].velocity = velocity; }
     float CalculateEnergy();
+    glm::vec3 GetEye() { return eye; }
+    glm::vec3 GetCenter() { return center; }
+    glm::vec3 GetPosFront(const float dis) { return eye + glm::normalize(center - eye) * dis; }
+    glm::vec3 GetDirFront() { return glm::normalize(center - eye); }
 
     static void cursor_pos_callback(GLFWwindow* window, double xpos, double ypos);
+
+    vector<Sphere> spheres;
+    vector<Cube> cubes;
+
 private:
 
     template <class Object>
@@ -46,8 +52,7 @@ private:
     void CollisionSpheres(Sphere& sphere1, Sphere& sphere2, const bool explode = false);
     Sphere_renderer sphere_renderer;
     Cube_renderer cube_renderer;
-    vector<Sphere> spheres;
-    vector<Cube> cubes;
+
 
     Light light;
     glm::vec3 eye;

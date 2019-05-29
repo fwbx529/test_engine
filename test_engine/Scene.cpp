@@ -92,7 +92,6 @@ void Scene::SetView(glm::vec3 _eye, glm::vec3 _center, const float aspect)
 
 void Scene::Draw()
 {
-    SetView();
 
     glUseProgram(phong_prog);
 
