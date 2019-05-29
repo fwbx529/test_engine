@@ -124,7 +124,7 @@ Cross_renderer::Cross_renderer()
         glm::vec2(-0.1, -0.1),
         glm::vec2(-0.1, 0.1),
         glm::vec2(0.1, 0.1),
-        glm::vec2(0.1, 0.1),
+        glm::vec2(0.1, -0.1),
     };
     vector<glm::ivec3> face =
     {

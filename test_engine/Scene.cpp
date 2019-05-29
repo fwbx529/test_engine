@@ -95,7 +95,6 @@ void Scene::Draw()
 {
 
     glUseProgram(prog_phong);
-
     //Draw spheres
     sphere_renderer.BindVAO();
     for (int idx = 0; idx < spheres.size(); idx++)
@@ -146,6 +145,7 @@ void Scene::Draw()
         cube_renderer.Draw();
     }
 
+    glUseProgram(prog_logo);
     //Draw logos
     for (int idx = 0; idx < logos.size(); idx++)
     {

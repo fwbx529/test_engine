@@ -9,5 +9,5 @@ void main()
 {
     if (use_color_pure != 0) Color = vec4(color_pure, 1.0f);
     else Color = vec4(color, 1.0f);
-    gl_Position = vec4(position, 0.99, 1);
+    gl_Position = vec4(position, -0.99, 1);
 }
