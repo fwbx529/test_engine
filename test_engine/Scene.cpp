@@ -19,10 +19,11 @@ void Scene::cursor_pos_callback(GLFWwindow* window, double xpos, double ypos) {
 
 Scene::Scene(GLFWwindow*& window)
 {
-    glfwSetCursorPosCallback(window, cursor_pos_callback);
     int viewport[4];
     glGetIntegerv(GL_VIEWPORT, viewport);
     xpos_init = viewport[2] / 2; ypos_init = viewport[3] / 2;
+    glfwSetCursorPos(window, xpos_init, ypos_init);
+    glfwSetCursorPosCallback(window, cursor_pos_callback);
 
     Renderer::InitProgram(prog_phong, "vs_object.glsl", "fs_phong.glsl");
     Renderer::InitProgram(prog_logo, "vs_logo.glsl", "fs_logo.glsl");
