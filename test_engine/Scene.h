@@ -23,10 +23,13 @@ public:
     void SetView(glm::vec3 _eye, glm::vec3 _center, const float aspect);
     void Draw();
     void Simulation(const int total_iter = 10);
+    void Bullet();
     void Free();
 
     void AddSphere(Sphere& sphere) { spheres.push_back(sphere); }
     void AddCube(Cube& cube) { cubes.push_back(cube); }
+    void SetSpherePos(const glm::vec3 pos, const int idx) { assert(idx >= 0 && idx < spheres.size()); spheres[idx].pos = pos; }
+    void SetSphereVelocity(const glm::vec3 velocity, const int idx) { assert(idx >= 0 && idx < spheres.size()); spheres[idx].velocity = velocity; }
     float CalculateEnergy();
 private:
     template <class Object>

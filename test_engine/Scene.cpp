@@ -202,6 +202,27 @@ void Scene::Simulation(const int total_iter)
     time_prev = time;
 }
 
+void Scene::Bullet()
+{
+    static int time_prev = clock();
+    time = clock();
+    float timestep = (float)(time - time_prev) / 1000;
+
+    for (int idx = 0; idx < spheres.size(); idx++)
+    {
+        SimulateAcceleration(timestep, glm::vec3(0), spheres[idx]);
+        CollisionSphereInCube(spheres[idx], cubes[0]);
+    }
+    for (int idx = 0; idx < spheres.size(); idx++)
+    {
+        for (int idy = idx + 1; idy < spheres.size(); idy++)
+        {
+            CollisionSpheres(spheres[idx], spheres[idy]);
+        }
+    }
+    time_prev = time;
+}
+
 float Scene::CalculateEnergy()
 {
     float energy = 0;
