@@ -18,8 +18,9 @@ struct Light
 class Scene
 {
 public:
-    Scene();
+    Scene(GLFWwindow*& window);
     void SetLight(Light& _light);
+    void SetView();
     void SetView(glm::vec3 _eye, glm::vec3 _center, const float aspect);
     void Draw();
     void Simulation(const int total_iter = 10);
@@ -31,15 +32,18 @@ public:
     void SetSpherePos(const glm::vec3 pos, const int idx) { assert(idx >= 0 && idx < spheres.size()); spheres[idx].pos = pos; }
     void SetSphereVelocity(const glm::vec3 velocity, const int idx) { assert(idx >= 0 && idx < spheres.size()); spheres[idx].velocity = velocity; }
     float CalculateEnergy();
+
+    static void cursor_pos_callback(GLFWwindow* window, double xpos, double ypos);
 private:
+
     template <class Object>
     void SimulateForce(const float timestep, const glm::vec3 force, Object& object);
     template <class Object>
     void SimulateAcceleration(const float timestep, const glm::vec3 acceleration, Object& object);
     template <class Object>
-    void CollisionRange(glm::vec3 edge, Object& object, const bool min_edge);
-    void CollisionSphereInCube(Sphere& sphere, const Cube& cube);
-    void CollisionSpheres(Sphere& sphere1, Sphere& sphere2);
+    void CollisionRange(glm::vec3 edge, Object& object, const bool min_edge, const bool explode);
+    void CollisionSphereInCube(Sphere& sphere, const Cube& cube, const bool explode = false);
+    void CollisionSpheres(Sphere& sphere1, Sphere& sphere2, const bool explode = false);
     Sphere_renderer sphere_renderer;
     Cube_renderer cube_renderer;
     vector<Sphere> spheres;
@@ -52,4 +56,9 @@ private:
     GLuint phong_prog;
 
     int time;
+
+
+
+
+
 };

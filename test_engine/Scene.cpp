@@ -1,11 +1,40 @@
 
 #include "Scene.h"
 
-Scene::Scene()
+float theta = glm::radians(90.0f), phi = glm::radians(270.0f);
+double xpos_init, ypos_init;
+
+void Scene::cursor_pos_callback(GLFWwindow* window, double xpos, double ypos) {
+    static float theta_init = theta;
+    static float phi_init = phi;
+    static float angle_thres = glm::radians(20.0f);
+    float dx = (float)(xpos - xpos_init);
+    float dy = (float)(ypos - ypos_init);
+    theta += dy / 1000;
+    theta = glm::clamp(theta, theta_init - angle_thres, theta_init + angle_thres);
+    phi += dx / 1000;
+    phi = glm::clamp(phi, phi_init - angle_thres, phi_init + angle_thres);
+    glfwSetCursorPos(window, xpos_init, ypos_init);
+}
+
+Scene::Scene(GLFWwindow*& window)
 {
+    glfwSetCursorPosCallback(window, cursor_pos_callback);
+    int viewport[4];
+    glGetIntegerv(GL_VIEWPORT, viewport);
+    xpos_init = viewport[2] / 2; ypos_init = viewport[3] / 2;
+
     Renderer::InitProgram(phong_prog, "vs_object.glsl", "fs_phong.glsl");
     eye = glm::vec3(0, 0, 0);
     center = glm::vec3(0, 0, -1);
+
+    glm::vec3 Ambient(0.5);
+    glm::vec3 LightColor(0.5);
+    glm::vec3 LightDirection(3, 5, 8);
+    LightDirection = glm::normalize(LightDirection);
+    float Shininess = 20.0f;
+    float Strength = 1.5f;
+    SetLight(Light(Ambient, LightColor, LightDirection, Shininess, Strength));
 }
 
 void Scene::SetLight(Light& _light)
@@ -32,6 +61,18 @@ void Scene::SetLight(Light& _light)
     glUseProgram(0);
 }
 
+void Scene::SetView()
+{
+    center = eye + glm::vec3(sin(theta)*cos(phi), cos(theta), sin(theta)*sin(phi));
+
+    int viewport[4];
+    glGetIntegerv(GL_VIEWPORT, viewport);
+    float width = (float)viewport[2]; float height = (float)viewport[3];
+    float aspect = height / width;
+
+    SetView(eye, center, aspect);
+}
+
 void Scene::SetView(glm::vec3 _eye, glm::vec3 _center, const float aspect)
 {
     eye = _eye;
@@ -51,12 +92,15 @@ void Scene::SetView(glm::vec3 _eye, glm::vec3 _center, const float aspect)
 
 void Scene::Draw()
 {
+    SetView();
+
     glUseProgram(phong_prog);
 
     //Draw spheres
     sphere_renderer.BindVAO();
     for (int idx = 0; idx < spheres.size(); idx++)
     {
+        if (!spheres[idx].exist) continue;
         glm::mat4 model = 
             glm::translate(glm::mat4(), spheres[idx].pos) *
             glm::scale(glm::mat4(), spheres[idx].radius);
@@ -77,6 +121,7 @@ void Scene::Draw()
     cube_renderer.BindVAO();
     for (int idx = 0; idx < cubes.size(); idx++)
     {
+        if (!cubes[idx].exist) continue;
         glm::mat4 model =
             glm::translate(glm::mat4(), cubes[idx].pos) *
             cubes[idx].rotation * 
@@ -109,6 +154,7 @@ void Scene::Draw()
 template <class Object>
 void Scene::SimulateForce(const float timestep, const glm::vec3 force, Object& object)
 {
+    if (!object.exist) return;
     object.velocity += force / object.mass * 0.5f * timestep;
     object.pos += object.velocity;
     object.velocity += force / object.mass * 0.5f * timestep;
@@ -118,63 +164,88 @@ void Scene::SimulateForce(const float timestep, const glm::vec3 force, Object& o
 template <class Object>
 void Scene::SimulateAcceleration(const float timestep, const glm::vec3 acceleration, Object& object)
 {
+    if (!object.exist) return;
     object.velocity += acceleration * 0.5f * timestep;
     object.pos += object.velocity * timestep;
     object.velocity += acceleration * 0.5f * timestep;
 }
 
 template <class Object>
-void Scene::CollisionRange(glm::vec3 edge, Object& object, const bool min_edge)
+void Scene::CollisionRange(glm::vec3 edge, Object& object, const bool min_edge, const bool explode)
 {
-    if (min_edge)
+    if (!explode)
     {
-        if (object.pos.x < edge.x) {
-            object.velocity.x *= -1;
+        if (min_edge)
+        {
+            if (object.pos.x < edge.x) {
+                object.velocity.x *= -1;
+            }
+            if (object.pos.y < edge.y) {
+                object.velocity.y *= -1;
+            }
+            if (object.pos.z < edge.z) {
+                object.velocity.z *= -1;
+            }
         }
-        if (object.pos.y < edge.y) {
-            object.velocity.y *= -1;
-        }
-        if (object.pos.z < edge.z) {
-            object.velocity.z *= -1;
+        else
+        {
+            if (object.pos.x > edge.x) {
+                object.velocity.x *= -1;
+            }
+            if (object.pos.y > edge.y) {
+                object.velocity.y *= -1;
+            }
+            if (object.pos.z > edge.z) {
+                object.velocity.z *= -1;
+            }
         }
     }
     else
     {
-        if (object.pos.x > edge.x) {
-            object.velocity.x *= -1;
+        if (min_edge)
+        {
+            if (object.pos.x < edge.x || object.pos.y < edge.y || object.pos.z < edge.z) object.exist = false;
         }
-        if (object.pos.y > edge.y) {
-            object.velocity.y *= -1;
-        }
-        if (object.pos.z > edge.z) {
-            object.velocity.z *= -1;
+        else
+        {
+            if (object.pos.x > edge.x || object.pos.y > edge.y || object.pos.z > edge.z) object.exist = false;
         }
     }
 }
 
-void Scene::CollisionSphereInCube(Sphere& sphere, const Cube& cube)
+void Scene::CollisionSphereInCube(Sphere& sphere, const Cube& cube, const bool explode)
 {
+    if (!sphere.exist || !cube.exist) return;
     glm::vec3 cube_min = cube.pos - 0.5f * cube.size + sphere.radius;
     glm::vec3 cube_max = cube.pos + 0.5f * cube.size - sphere.radius;
-    CollisionRange(cube_min, sphere, true);
-    CollisionRange(cube_max, sphere, false);
+    CollisionRange(cube_min, sphere, true, explode);
+    CollisionRange(cube_max, sphere, false, explode);
 }
 
 //Attention: not for ellipse
-void Scene::CollisionSpheres(Sphere& sphere1, Sphere& sphere2)
+void Scene::CollisionSpheres(Sphere& sphere1, Sphere& sphere2, const bool explode)
 {
+    if (!sphere1.exist || !sphere2.exist) return;
     float dis = glm::length(sphere1.pos - sphere2.pos);
     if (dis < sphere1.radius[0] + sphere2.radius[0])
     {
-        float m1 = sphere1.mass, m2 = sphere2.mass;
-        glm::vec3 v1 = sphere1.velocity, v2 = sphere2.velocity;
-        glm::vec3 d = glm::normalize(sphere2.pos - sphere1.pos);
-        glm::vec3 v1_ = sphere1.velocity - sphere2.velocity;
-        glm::vec3 v2_ = 2.0f * d * m1 / (m1 + m2) * glm::dot(v1_, d);
-        glm::vec3 u2 = v2 + v2_;
-        glm::vec3 u1 = (m1*v1 + m2*v2 - m2*u2) / m1;
-        sphere1.velocity = u1;
-        sphere2.velocity = u2;
+        if (!explode)
+        {
+            float m1 = sphere1.mass, m2 = sphere2.mass;
+            glm::vec3 v1 = sphere1.velocity, v2 = sphere2.velocity;
+            glm::vec3 d = glm::normalize(sphere2.pos - sphere1.pos);
+            glm::vec3 v1_ = sphere1.velocity - sphere2.velocity;
+            glm::vec3 v2_ = 2.0f * d * m1 / (m1 + m2) * glm::dot(v1_, d);
+            glm::vec3 u2 = v2 + v2_;
+            glm::vec3 u1 = (m1*v1 + m2*v2 - m2*u2) / m1;
+            sphere1.velocity = u1;
+            sphere2.velocity = u2;
+        }
+        else
+        {
+            sphere1.exist = false;
+            sphere2.exist = false;
+        }
     }
 }
 
@@ -211,13 +282,13 @@ void Scene::Bullet()
     for (int idx = 0; idx < spheres.size(); idx++)
     {
         SimulateAcceleration(timestep, glm::vec3(0), spheres[idx]);
-        CollisionSphereInCube(spheres[idx], cubes[0]);
+        CollisionSphereInCube(spheres[idx], cubes[0], true);
     }
     for (int idx = 0; idx < spheres.size(); idx++)
     {
         for (int idy = idx + 1; idy < spheres.size(); idy++)
         {
-            CollisionSpheres(spheres[idx], spheres[idy]);
+            CollisionSpheres(spheres[idx], spheres[idy], true);
         }
     }
     time_prev = time;

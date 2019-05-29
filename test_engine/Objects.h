@@ -11,6 +11,9 @@ public:
 
     glm::vec3 velocity = glm::vec3(0, 0, 0);
     float mass;
+
+    bool exist = true;
+
     Sphere() {}
     Sphere(glm::vec3 _pos, glm::vec3 _radius, glm::vec3 _color, float density = 1.0f) :
         pos(_pos), radius(_radius), color(_color) 
@@ -32,6 +35,9 @@ public:
 
     glm::vec3 velocity = glm::vec3(0, 0, 0);
     float mass;
+
+    bool exist = true;
+
     Cube() {}
     Cube(glm::vec3 _pos, glm::mat4 _rotation, glm::vec3 _size, glm::vec3 _color, bool _inside = false, float density = 1.0f) :
         pos(_pos), rotation(_rotation), size(_size), color(_color), inside(_inside) 
