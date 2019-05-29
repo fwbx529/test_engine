@@ -29,6 +29,7 @@ public:
 
     void AddSphere(Sphere& sphere) { spheres.push_back(sphere); }
     void AddCube(Cube& cube) { cubes.push_back(cube); }
+    void AddLogo(Logo& logo) { logos.push_back(logo); }
     float CalculateEnergy();
     glm::vec3 GetEye() { return eye; }
     glm::vec3 GetCenter() { return center; }
@@ -39,6 +40,7 @@ public:
 
     vector<Sphere> spheres;
     vector<Cube> cubes;
+    vector<Logo> logos;
 
 private:
 
@@ -52,18 +54,14 @@ private:
     void CollisionSpheres(Sphere& sphere1, Sphere& sphere2, const bool explode = false);
     Sphere_renderer sphere_renderer;
     Cube_renderer cube_renderer;
-
+    Cross_renderer cross_renderer;
 
     Light light;
     glm::vec3 eye;
     glm::vec3 center;
 
-    GLuint phong_prog;
+    GLuint prog_phong;
+    GLuint prog_logo;
 
     int time;
-
-
-
-
-
 };

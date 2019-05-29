@@ -24,6 +24,15 @@ public:
     void Free() {}
 };
 
+class Sphere_renderer :public Renderer
+{
+public:
+    Sphere_renderer(const int segments = 64);
+private:
+    void SetSphereVertex(vector<glm::vec3>& vertex, const int segments);
+    void SetSphereFace(vector<glm::ivec3>& face, const int segments);
+};
+
 class Cube
 {
 public:
@@ -52,17 +61,24 @@ private:
     GLuint vbo_color = 0;
 };
 
-class Sphere_renderer:public Renderer
-{
-public:
-    Sphere_renderer(const int segments = 64);
-private:
-    void SetSphereVertex(vector<glm::vec3>& vertex, const int segments);
-    void SetSphereFace(vector<glm::ivec3>& face, const int segments);
-};
-
 class Cube_renderer:public Renderer 
 {
 public:
     Cube_renderer();
+};
+
+enum LogoType { logo_cross };
+
+class Logo
+{
+public:
+    LogoType type;
+    glm::vec3 color;
+    Logo(LogoType _type, glm::vec3 _color) :type(_type), color(_color) {}
+};
+
+class Cross_renderer:public Renderer 
+{
+public:
+    Cross_renderer();
 };

@@ -25,6 +25,7 @@ public:
 
     void SetData(vector<glm::vec3>& _vertex, vector<glm::ivec3>& _face, const bool face_normal = false);
     void SetData(vector<glm::vec3>& _vertex, vector<glm::ivec3>& _face, vector<glm::vec3>& _normal);
+    void SetData2D(vector<glm::vec2>& _vertex, vector<glm::ivec3>& _face);
     void BindVAO() { glBindVertexArray(vao); }
     void Draw(GLuint& prog, const bool draw_point = false);
     void Draw(const bool draw_point = false);
@@ -34,6 +35,7 @@ public:
 
 private:
     void SetBuffer(const vector<glm::vec3>& vertex, const vector<glm::vec3>& normal, const bool face_normal = false);
+    void SetBuffer2D(const vector<glm::vec2>& vertex);
     void CalNorm_SetBuffer(const vector<glm::vec3>& vertex, const bool face_normal = false);
 
     GLuint vao;

@@ -116,3 +116,20 @@ Cube_renderer::Cube_renderer()
     for (int v = 0; v < vertex.size(); v++) vertex[v] = vertex[v] * 0.5f;
     SetData(vertex, face, true);
 }
+
+Cross_renderer::Cross_renderer()
+{
+    vector<glm::vec2> vertex =
+    {
+        glm::vec2(-0.1, -0.1),
+        glm::vec2(-0.1, 0.1),
+        glm::vec2(0.1, 0.1),
+        glm::vec2(0.1, 0.1),
+    };
+    vector<glm::ivec3> face =
+    {
+        glm::ivec3(1, 2, 0),
+        glm::ivec3(1, 3, 2),
+    };
+    SetData2D(vertex, face);
+}

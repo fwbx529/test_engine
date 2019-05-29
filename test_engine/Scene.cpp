@@ -24,7 +24,8 @@ Scene::Scene(GLFWwindow*& window)
     glGetIntegerv(GL_VIEWPORT, viewport);
     xpos_init = viewport[2] / 2; ypos_init = viewport[3] / 2;
 
-    Renderer::InitProgram(phong_prog, "vs_object.glsl", "fs_phong.glsl");
+    Renderer::InitProgram(prog_phong, "vs_object.glsl", "fs_phong.glsl");
+    Renderer::InitProgram(prog_logo, "vs_logo.glsl", "fs_logo.glsl");
     eye = glm::vec3(0, 0, 0);
     center = glm::vec3(0, 0, -1);
 
@@ -41,14 +42,14 @@ void Scene::SetLight(Light& _light)
 {
     light = _light;
 
-    glUseProgram(phong_prog);
+    glUseProgram(prog_phong);
 
-    GLuint Ambient_loc = glGetUniformLocation(phong_prog, "Ambient");
-    GLuint LightColor_loc = glGetUniformLocation(phong_prog, "LightColor");
-    GLuint LightDirection_loc = glGetUniformLocation(phong_prog, "LightDirection");
-    GLuint HalfVector_loc = glGetUniformLocation(phong_prog, "HalfVector");
-    GLuint Shininess_loc = glGetUniformLocation(phong_prog, "Shininess");
-    GLuint Strength_loc = glGetUniformLocation(phong_prog, "Strength");
+    GLuint Ambient_loc = glGetUniformLocation(prog_phong, "Ambient");
+    GLuint LightColor_loc = glGetUniformLocation(prog_phong, "LightColor");
+    GLuint LightDirection_loc = glGetUniformLocation(prog_phong, "LightDirection");
+    GLuint HalfVector_loc = glGetUniformLocation(prog_phong, "HalfVector");
+    GLuint Shininess_loc = glGetUniformLocation(prog_phong, "Shininess");
+    GLuint Strength_loc = glGetUniformLocation(prog_phong, "Strength");
 
     glUniform3fv(Ambient_loc, 1, &light.Ambient[0]);
     glUniform3fv(LightColor_loc, 1, &light.LightColor[0]);
@@ -82,9 +83,9 @@ void Scene::SetView(glm::vec3 _eye, glm::vec3 _center, const float aspect)
                                  glm::vec3(0, 1, 0));
     glm::mat4 projection(glm::perspective(glm::radians(60.0f), 1.0f / aspect, 0.1f, 100.0f));
 
-    Renderer::SetMVP(phong_prog, model, view, projection);
-    glUseProgram(phong_prog);
-    GLuint HalfVector_loc = glGetUniformLocation(phong_prog, "HalfVector");
+    Renderer::SetMVP(prog_phong, model, view, projection);
+    glUseProgram(prog_phong);
+    GLuint HalfVector_loc = glGetUniformLocation(prog_phong, "HalfVector");
     glm::vec3 HalfVector = glm::normalize(glm::normalize(eye - center) + light.LightDirection);
     glUniform3fv(HalfVector_loc, 1, &HalfVector[0]);
     glUseProgram(0);
@@ -93,7 +94,7 @@ void Scene::SetView(glm::vec3 _eye, glm::vec3 _center, const float aspect)
 void Scene::Draw()
 {
 
-    glUseProgram(phong_prog);
+    glUseProgram(prog_phong);
 
     //Draw spheres
     sphere_renderer.BindVAO();
@@ -105,10 +106,10 @@ void Scene::Draw()
             glm::scale(glm::mat4(), spheres[idx].radius);
         glm::mat4 normal_matrix = model;
         int use_color_pure = 1;
-        GLuint model_matrix_loc = glGetUniformLocation(phong_prog, "model_matrix");
-        GLuint normal_matrix_loc = glGetUniformLocation(phong_prog, "normal_matrix");
-        GLuint color_pure_loc = glGetUniformLocation(phong_prog, "color_pure");
-        GLuint use_color_pure_loc = glGetUniformLocation(phong_prog, "use_color_pure");
+        GLuint model_matrix_loc = glGetUniformLocation(prog_phong, "model_matrix");
+        GLuint normal_matrix_loc = glGetUniformLocation(prog_phong, "normal_matrix");
+        GLuint color_pure_loc = glGetUniformLocation(prog_phong, "color_pure");
+        GLuint use_color_pure_loc = glGetUniformLocation(prog_phong, "use_color_pure");
         glUniformMatrix4fv(model_matrix_loc, 1, GL_FALSE, &model[0][0]);
         glUniformMatrix4fv(normal_matrix_loc, 1, GL_FALSE, &normal_matrix[0][0]);
         glUniform3fv(color_pure_loc, 1, &spheres[idx].color[0]);
@@ -133,16 +134,28 @@ void Scene::Draw()
             normal_matrix = normal_matrix * inv;
         }
         int use_color_pure = (int)(cubes[idx].color_seted == false);
-        GLuint model_matrix_loc = glGetUniformLocation(phong_prog, "model_matrix");
-        GLuint normal_matrix_loc = glGetUniformLocation(phong_prog, "normal_matrix");
-        GLuint color_pure_loc = glGetUniformLocation(phong_prog, "color_pure");
-        GLuint use_color_pure_loc = glGetUniformLocation(phong_prog, "use_color_pure");
+        GLuint model_matrix_loc = glGetUniformLocation(prog_phong, "model_matrix");
+        GLuint normal_matrix_loc = glGetUniformLocation(prog_phong, "normal_matrix");
+        GLuint color_pure_loc = glGetUniformLocation(prog_phong, "color_pure");
+        GLuint use_color_pure_loc = glGetUniformLocation(prog_phong, "use_color_pure");
         glUniformMatrix4fv(model_matrix_loc, 1, GL_FALSE, &model[0][0]);
         glUniformMatrix4fv(normal_matrix_loc, 1, GL_FALSE, &normal_matrix[0][0]);
         glUniform3fv(color_pure_loc, 1, &cubes[idx].color[0]);
         glUniform1i(use_color_pure_loc, use_color_pure);
         if (!use_color_pure) cubes[idx].BindColorVBO();
         cube_renderer.Draw();
+    }
+
+    //Draw logos
+    for (int idx = 0; idx < logos.size(); idx++)
+    {
+        if (logos[idx].type == logo_cross) cross_renderer.BindVAO();
+        int use_color_pure = 1;
+        GLuint color_pure_loc = glGetUniformLocation(prog_logo, "color_pure");
+        GLuint use_color_pure_loc = glGetUniformLocation(prog_logo, "use_color_pure");
+        glUniform3fv(color_pure_loc, 1, &logos[idx].color[0]);
+        glUniform1i(use_color_pure_loc, use_color_pure);
+        cross_renderer.Draw();
     }
 
     glUseProgram(0);

@@ -165,7 +165,9 @@
     <ClCompile Include="Scene.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="fs_logo.glsl" />
     <None Include="fs_phong.glsl" />
+    <None Include="vs_logo.glsl" />
     <None Include="vs_object.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

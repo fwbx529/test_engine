@@ -65,6 +65,7 @@ int main()
             scene.AddSphere(Sphere(glm::vec3(i*0.3f, j*0.3f, -8.0f), glm::vec3(0.05f), rand_vec3()));
         }
     }
+    scene.AddLogo(Logo(logo_cross, glm::vec3(0.8, 0.8, 0.8)));
 
     while (glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS && !glfwWindowShouldClose(window))
     {

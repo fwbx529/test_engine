@@ -63,6 +63,36 @@ void Renderer::SetBuffer(const vector<glm::vec3>& vertex, const vector<glm::vec3
     data_seted = true;
 }
 
+void Renderer::SetBuffer2D(const vector<glm::vec2>& vertex)
+{
+    vector<glm::vec2> vertex_face(3 * face_count);
+    for (unsigned int f = 0; f < face_count; f++)
+    {
+        glm::ivec3 f_id(face[f]);
+        vertex_face[3 * f] = vertex[f_id.x];
+        vertex_face[3 * f + 1] = vertex[f_id.y];
+        vertex_face[3 * f + 2] = vertex[f_id.z];
+    }
+
+    glBindVertexArray(vao);
+
+    if (!data_seted)
+    {
+        glBindBuffer(GL_ARRAY_BUFFER, vbo_array_buffer[0]);
+        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, NULL);
+        glEnableVertexAttribArray(0);
+        glNamedBufferStorage(vbo_array_buffer[0], 3 * face_count * sizeof(glm::vec2), vertex_face.data(), GL_DYNAMIC_STORAGE_BIT);
+    }
+    else
+    {
+        glNamedBufferSubData(vbo_array_buffer[0], 0, 3 * face_count * sizeof(glm::vec2), vertex_face.data());
+    }
+
+    glBindVertexArray(0);
+
+    data_seted = true;
+}
+
 void Renderer::CalNorm_SetBuffer(const vector<glm::vec3>& vertex, const bool face_normal)
 {
     vector<glm::vec3> normal;
@@ -116,6 +146,15 @@ void Renderer::SetData(vector<glm::vec3>& _vertex, vector<glm::ivec3>& _face, ve
     face_count = (unsigned int)_face.size();
     SetBuffer(_vertex, _normal);
 }
+
+void Renderer::SetData2D(vector<glm::vec2>& _vertex, vector<glm::ivec3>& _face)
+{
+    face = _face;
+    vertex_count = (unsigned int)_vertex.size();
+    face_count = (unsigned int)_face.size();
+    SetBuffer2D(_vertex);
+}
+
 
 void Renderer::Draw(GLuint& prog, const bool draw_point)
 {
