@@ -19,7 +19,7 @@ class Scene
 {
 public:
     Scene(GLFWwindow*& window);
-    void SetLight(Light& _light);
+    void SetLight(Light _light);
     void SetView();
     void SetView(glm::vec3 _eye, glm::vec3 _center, const float aspect);
     void Draw();
@@ -27,9 +27,9 @@ public:
     void Bullet(const int total_iter = 10);
     void Free();
 
-    void AddSphere(Sphere& sphere) { spheres.push_back(sphere); }
-    void AddCube(Cube& cube) { cubes.push_back(cube); }
-    void AddLogo(Logo& logo) { logos.push_back(logo); }
+    void AddSphere(Sphere sphere) { spheres.push_back(sphere); }
+    void AddCube(Cube cube) { cubes.push_back(cube); }
+    void AddLogo(Logo logo) { logos.push_back(logo); }
     float CalculateEnergy();
     glm::vec3 GetEye() { return eye; }
     glm::vec3 GetCenter() { return center; }

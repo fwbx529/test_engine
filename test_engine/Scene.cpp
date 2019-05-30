@@ -39,7 +39,7 @@ Scene::Scene(GLFWwindow*& window)
     SetLight(Light(Ambient, LightColor, LightDirection, Shininess, Strength));
 }
 
-void Scene::SetLight(Light& _light)
+void Scene::SetLight(Light _light)
 {
     light = _light;
 
@@ -102,8 +102,8 @@ void Scene::Draw()
     {
         if (!spheres[idx].exist) continue;
         glm::mat4 model = 
-            glm::translate(glm::mat4(), spheres[idx].pos) *
-            glm::scale(glm::mat4(), spheres[idx].radius);
+            glm::translate(glm::mat4(1.0f), spheres[idx].pos) *
+            glm::scale(glm::mat4(1.0f), spheres[idx].radius);
         glm::mat4 normal_matrix = model;
         int use_color_pure = 1;
         GLuint model_matrix_loc = glGetUniformLocation(prog_phong, "model_matrix");
@@ -123,9 +123,9 @@ void Scene::Draw()
     {
         if (!cubes[idx].exist) continue;
         glm::mat4 model =
-            glm::translate(glm::mat4(), cubes[idx].pos) *
+            glm::translate(glm::mat4(1.0f), cubes[idx].pos) *
             cubes[idx].rotation * 
-            glm::scale(glm::mat4(), cubes[idx].size);
+            glm::scale(glm::mat4(1.0f), cubes[idx].size);
         glm::mat4 normal_matrix = model;
         if (cubes[idx].inside)
         {
@@ -266,7 +266,7 @@ void Scene::Simulation(const int total_iter)
 {
     static int time_prev = clock();
     time = clock();
-    float timestep = (float)(time - time_prev) / 1000;
+    float timestep = (float)(time - time_prev) / CLOCKS_PER_SEC;
     glm::vec3 gravity = glm::vec3(0, -GRAVITY, 0);
     for (int iter = 0; iter < total_iter; iter++)
     {
@@ -290,7 +290,7 @@ void Scene::Bullet(const int total_iter)
 {
     static int time_prev = clock();
     time = clock();
-    float timestep = (float)(time - time_prev) / 1000;
+    float timestep = (float)(time - time_prev) / CLOCKS_PER_SEC;
 
     for (int iter = 0; iter < total_iter; iter++)
     {

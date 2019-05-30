@@ -44,7 +44,7 @@ int main()
 
     Scene scene(window);
     
-    Cube room(glm::vec3(0, 0, -5), glm::mat4(), glm::vec3(6, 6, 10), glm::vec3(1, 0.8f, 0.6f), true);
+    Cube room(glm::vec3(0, 0, -5), glm::mat4(1.0f), glm::vec3(6, 6, 10), glm::vec3(1, 0.8f, 0.6f), true);
     vector<glm::vec3> room_color =
     {
         glm::vec3(0.5, 1, 1),
